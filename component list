@@ -1,0 +1,55 @@
+# Bill of Materials (BOM)
+
+Complete component list for the RC Ornithopter Flight Stabilization System.
+
+## Electronics
+
+| # | Component | Model / Part | Quantity | Key Specs |
+|---|---|---|---|---|
+| 1 | Microcontroller | Arduino Nano | 1 | ATmega328P, 16MHz, 5V |
+| 2 | IMU Sensor | MPU6050 Breakout | 1 | 6-axis, I2C, 3.3V/5V |
+| 3 | BLDC Motor | F23700 3500KV | 1 | Composite, high RPM |
+| 4 | ESC | 30A ESC | 1 | 2–3S LiPo, BEC 5V/3A |
+| 5 | Servo Motor | SG90 | 2 | 9g, 1.8kgf·cm |
+| 6 | RC Transmitter | FlySky FS-i6 | 1 | 6CH, 2.4GHz AFHDS 2A |
+| 7 | RC Receiver | FlySky FS-iA6 | 1 | 6CH, 2.4GHz |
+| 8 | LiPo Battery (Drone) | 2S 7.4V / 3S 11.1V | 1 | Lightweight, 45min |
+| 9 | Battery (RC Controller) | AA 1.5V Dry Cell | 4 | For FS-i6 transmitter |
+| 10 | FPV Camera | WiFi Mini Cam | 1 | 640×480, 2.4G WiFi, 8g |
+| 11 | JST-XH Connectors | JST-XH 2/3/4 Pin | 1 set | Battery + signal |
+
+## Mechanical Structure
+
+| # | Component | Material | Quantity | Purpose |
+|---|---|---|---|---|
+| 12 | Frame / Gearbox housing | Fiberglass sheet | As needed | Rigid, lightweight frame |
+| 13 | Plastic Gears | POM/Nylon | 3 | Pinion A, Spur+Pinion B+C, Driven D |
+| 14 | Wing Membrane | Polyethylene cover | 1 | Lightweight aerofoil surface |
+| 15 | Wing Spars / Rods | Plastic / Carbon | 4 | Wing skeleton structure |
+| 16 | Small Bearings | Steel ball bearing | 2–4 | Smooth gear rotation |
+| 17 | Double Ball Joints | Steel | 4 | Wing lever linkages |
+| 18 | Small Nuts & Bolts | M2 / M3 Steel | 1 set | Structural fastening |
+| 19 | Foam Tape | EVA foam | 1 roll | Anti-vibration IMU mount |
+
+## Tools Required
+
+- Soldering iron + solder
+- Hot glue gun
+- Small screwdrivers (Phillips + flat)
+- Wire stripper
+- Multimeter
+- Arduino IDE (software)
+- USB-A to Mini-USB cable (Arduino programming)
+
+## Total Estimated Weight
+
+| Component | Weight (g) |
+|---|---|
+| BLDC Motor | 12 |
+| RC Receiver | 6.4 |
+| Servo Motor (×2) | 9.8 × 2 = 19.6 |
+| Battery | 30 |
+| ESC Controller | 25 |
+| Frame + Mechanical | 15 |
+| Arduino + MPU6050 | ~8 |
+| **Total** | **~116 g** |
