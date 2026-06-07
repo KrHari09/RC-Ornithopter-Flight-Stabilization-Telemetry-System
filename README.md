@@ -53,3 +53,59 @@ This project is an **electronics-domain implementation** of a Radio-Controlled (
 
 ---
 
+##  Mechanism: The Dual-Crank Flapping System
+
+The ornithopter uses a **compound gear train** to translate the rotary motion of a BLDC motor into the reciprocating flapping motion of its wings.
+
+<img width="1366" height="1160" alt="image" src="https://github.com/user-attachments/assets/2ff9cc44-a799-4461-baea-f2967e58a4b5" />
+
+### How It Works
+
+1. The **BLDC motor** drives a small 10-tooth pinion gear.
+2. The pinion meshes with a **70-tooth spur gear**, achieving a gear reduction of 7:1 — this reduces speed and multiplies torque.
+3. Each large gear has an **offset crank pin**. A connecting rod links this pin to a wing lever.
+4. As the gears rotate, the connecting rods **push and pull** the wing levers, producing the flapping stroke.
+5. Two cranks placed 180° apart ensure **symmetrical flapping**, preventing roll instability.
+
+### Gear Train Summary
+
+| Gear | Teeth | Role |
+|---|---|---|
+| Pinion (A) | 10 | Input from motor |
+| Spur Gear + Pinion (B+C) | 70 + small | Intermediate stage |
+| Driven Gear (D) | Large | Output shaft / crank |
+
+### Why Dual-Crank?
+
+- Eliminates the **dead-centre effect** of single-crank designs
+- Ensures **perfectly symmetrical** flapping — the ornithopter flies straight
+- Reduces **shock loads** on the motor and ESC
+- Provides smoother power delivery and lower vibration
+
+---
+
+##  Electronics System Architecture
+
+<img width="1440" height="1480" alt="image" src="https://github.com/user-attachments/assets/4daaa0d5-e767-4c6d-9534-3ab90aebbec5" />
+
+---
+
+##  Components & Specifications
+
+| # | Component | Model | Key Specifications |
+|---|---|---|---|
+| 1 | **BLDC Motor** | F23700 (3500KV) | Composite material, high RPM, lightweight |
+| 2 | **ESC Controller** | 30A ESC | 490Hz response, 16KHz motor freq, 2–3S LiPo, BEC 5V/3A |
+| 3 | **Servo Motor ×2** | SG90 | 9g, 1.8 kgf·cm torque, 0.1s/60°, 4.8V |
+| 4 | **RC Transmitter** | FlySky FS-i6 | 6CH, 2.4GHz AFHDS 2A, 4096 resolution |
+| 5 | **RC Receiver** | FlySky FS-iA6 | 6CH, 2.4GHz, 500KHz bandwidth |
+| 6 | **IMU Sensor** | MPU6050 | 6-axis, I2C, ±250°/s gyro, ±2g accel |
+| 7 | **Microcontroller** | Arduino Nano | ATmega328P, 16MHz, 32KB flash |
+| 8 | **Battery** | 2S/3S LiPo | Lightweight, 45min operating time |
+| 9 | **FPV Camera** | WiFi Mini Cam | 640×480 VGA, M-JPEG, 10fps, 2.4G WiFi, 8g |
+| 10 | **Frame Material** | Fiberglass Sheet | Lightweight, rigid structural support |
+| 11 | **Wing Membrane** | Polyethylene Cover | Lightweight, flexible, aerofoil surface |
+| 12 | **Connectors** | JST-XH Plugs | Standard RC/LiPo connectors |
+
+---
+
