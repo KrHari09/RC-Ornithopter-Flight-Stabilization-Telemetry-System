@@ -4,24 +4,6 @@
 
 The PID controller keeps your ornithopter at the pilot's commanded pitch angle by adjusting the elevator (tail) servo automatically.
 
-```v
-                RC Stick (Setpoint)
-                        │
-                        ▼
-                   [  Error  ] ◄──── MPU6050 (Actual Pitch)
-                        │
-          ┌─────────────┼─────────────┐
-          ▼             ▼             ▼
-        Kp × e      Ki × ∫e dt    Kd × de/dt
-          │             │             │
-          └─────────────┴─────────────┘
-                        │
-                    PID Output
-                        │
-                        ▼
-               Elevator Servo Angle
-```
-
 ## Step-by-Step Tuning Procedure
 
 ### Phase 0: Preparation (Before any tuning)
