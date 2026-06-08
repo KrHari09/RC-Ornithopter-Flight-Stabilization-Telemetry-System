@@ -1,0 +1,88 @@
+# Flight Test Log
+
+Record of all test flights for the RC Ornithopter project.
+
+---
+
+## Test Phase 1 — Manual RC Only (Basic Controller)
+
+**Controller:** `flight_controller_basic.ino`  
+**PID:** Disabled  
+
+| Test # | Date | Duration | Throttle % | Outcome | Notes |
+|---|---|---|---|---|---|
+| 1.1 | — | ~5s | 60% | Partial flight | Sustained lift achieved, very difficult to control pitch |
+| 1.2 | — | ~8s | 65% | Crash | Pitch instability, no stabilization |
+| 1.3 | — | ~12s | 62% | Partial | Manual correction possible but demanding |
+
+**Findings:**
+- Sustained flight is possible with manual control.
+- Without pitch stabilization, the ornithopter requires constant pilot input to stay level.
+- Gearbox shoulder joint identified as primary failure point.
+
+---
+
+## Test Phase 2 — PD Controller (Pitch Only)
+
+**Controller:** `flight_controller_pid.ino` with `Ki = 0`  
+**Gains:** `Kp = 1.0, Ki = 0, Kd = 0.4`
+
+| Test # | Date | Duration | Throttle % | Outcome | Notes |
+|---|---|---|---|---|---|
+| 2.1 | — | ~15s | 65% | Improved | Pitch noticeably more stable |
+| 2.2 | — | ~20s | 68% | Good | 9 wing beats captured in level flight |
+| 2.3 | — | ~30s | 70% | Successful | ~30 yards of steady flight, shut down manually |
+
+**Findings:**
+- PD controller (without integral) successfully stabilises pitch.
+- Throttle limited to ~70% due to ESC 30A rating.
+- At maximum throttle, wing spars develop resonance mode — avoid.
+- Flapping vibration on MPU6050 manageable with foam mounting.
+
+---
+
+## Test Phase 3 — Full PID + RC Hybrid
+
+**Controller:** `flight_controller_pid.ino`  
+**Gains:** `Kp = 1.2, Ki = 0.05, Kd = 0.5`
+
+| Test # | Date | Duration | Throttle % | Outcome | Notes |
+|---|---|---|---|---|---|
+| 3.1 | — | ~25s | 68% | Successful | Steady level flight, pitch within ±3° |
+| 3.2 | — | ~35s | 70% | Successful | Wind gust handled — PID corrected |
+| 3.3 | — | ~40s | 70% | Best flight | Longest stable flight, smooth response |
+
+**Measured Flight Parameters (Phase 3.3):**
+
+| Parameter | Measured Value |
+|---|---|
+| Total vehicle weight | 98.2 g |
+| Flapping frequency | 5.2 Hz |
+| Flapping amplitude | 40° |
+| Lift coefficient (Cl) | 1.6 |
+| Calculated lift | 83 N |
+| Pitch variation (level flight) | ±3° |
+| Throttle setting | ~70% |
+| Wing beats per test window | 9 |
+
+---
+
+## Known Issues & Resolutions
+
+| Issue | Root Cause | Resolution |
+|---|---|---|
+| Gearbox shoulder joint failure | Repetitive load reversal | Redesigned with reinforced bracket |
+| MPU6050 noisy readings | Flapping vibration | Foam tape anti-vibration mount |
+| ESC cutout at high throttle | Exceeded 30A rating | Throttle limited to 70% |
+| Wing spar resonance at max throttle | Standing wave mode | Avoid throttle >85% |
+| Drift in roll (uncontrolled axis) | Wing asymmetry (weakened spar) | Replaced wing spar |
+
+---
+
+## Next Steps
+
+- [ ] Implement roll stabilization (aileron or differential tail control)
+- [ ] Add telemetry logging to SD card
+- [ ] Investigate GPS-based autonomous waypoint navigation
+- [ ] Test FPV camera stream at higher resolution
+- [ ] Reduce total weight below 90g
