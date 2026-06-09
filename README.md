@@ -359,5 +359,19 @@ Post-flight FFT analysis of the accelerometer Z-axis data confirms **5.2 Hz fund
 > The PID derivative term (Kd) must be low-pass filtered to prevent these harmonics from coupling into the servo output.
 
 ---
+#  Live PID Simulator
+
+An interactive browser-based PID tuning simulator is hosted on GitHub Pages. Visualize the effect of Kp, Ki, Kd on simulated ornithopter pitch response before touching hardware.
 
 
+** [Open Live Simulator](https://krhari09.github.io/Ornithopter/simulation/)**
+
+
+Features:
+- Real-time pitch response canvas
+- Adjustable Kp / Ki / Kd sliders
+- Wind gust disturbance injection button
+- Animated ornithopter responding to PID output
+- Complementary filter visualization toggle
+
+---
