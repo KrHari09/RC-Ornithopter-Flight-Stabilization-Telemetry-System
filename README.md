@@ -321,7 +321,20 @@ Step 4: Raise Ki slowly to eliminate any residual tilt offset.
 | Violent overcorrection | Reduce Kp, increase Kd |
 
 ---
+##  IMU Data & Sensor Fusion
 
+### MPU6050 In-Flight Capture
+
+Raw gyroscope (Roll/Pitch rate in °/s) and accelerometer Z-axis data captured via Serial at 100 Hz during a 2-second flight window. The 5.2 Hz flapping oscillation is clearly visible in both axes.
+
+
+<img width="1634" height="883" alt="mpu6050_imu_data" src="https://github.com/user-attachments/assets/21053ab8-18ad-4c5a-b9b9-c591c2e6dd3e" />
+
+The **complementary filter** (α = 0.98) blends:
+- **Gyroscope** — accurate short-term angular rate, but drifts over time
+- **Accelerometer** — absolute tilt reference, but noisy due to wing vibration
+
+<img width="1452" height="920" alt="image" src="https://github.com/user-attachments/assets/bcc1df57-efc9-41a2-b25c-71ebfd135c91" />
 
 
 
