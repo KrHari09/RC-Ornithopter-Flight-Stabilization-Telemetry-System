@@ -156,6 +156,172 @@ The screenshot below shows the Arduino IDE **Serial Monitor** at 115200 baud dur
 > **Observed:** All three RC channels lock at ~1500 µs (center) at startup. PID output converges toward zero within 0.5 s as the complementary filter settles.
 
 ---
+### File: `src/flight_controller_basic.ino`
+> Manual RC passthrough — no stabilization. Used for Phase 1 testing.
+
+
+```cpp
+#include <Servo.h>
+#include <Wire.h>
+
+const int escPin            = 9;
+const int elevatorServoPin  = 10;
+const int rudderServoPin    = 11;
+const int throttleInPin     = 2;
+const int pitchInPin        = 3;
+const int yawInPin          = 4;
+
+Servo flappingMotor, elevatorServo, rudderServo;
+
+void setup() {
+  Serial.begin(115200);
+  Wire.begin();
+
+  // Wake MPU6050
+  Wire.beginTransmission(0x68);
+  Wire.write(0x6B); Wire.write(0);
+  Wire.endTransmission(true);
+
+  flappingMotor.attach(escPin, 1000, 2000);
+  elevatorServo.attach(elevatorServoPin);
+  rudderServo.attach(rudderServoPin);
+
+  // ESC arming
+  flappingMotor.writeMicroseconds(1000);
+  delay(2000);
+  Serial.println("ESC Armed. Flight loop starting...");
+}
+
+void loop() {
+  int thr = pulseIn(throttleInPin, HIGH, 25000);
+  int pitch = pulseIn(pitchInPin, HIGH, 25000);
+  int yaw   = pulseIn(yawInPin,   HIGH, 25000);
+
+  thr   = constrain(thr, 1000, 2000);
+  pitch = constrain(pitch, 1000, 2000);
+  yaw   = constrain(yaw, 1000, 2000);
+
+  flappingMotor.writeMicroseconds(thr);
+  elevatorServo.writeMicroseconds(pitch);
+  rudderServo.writeMicroseconds(yaw);
+
+  delay(10); // ~100 Hz
+}
+```
+
+---
+
+### File: `src/flight_controller_pid.ino`
+> Full PID + RC hybrid — active pitch stabilization.
+
+```cpp
+#include <Servo.h>
+#include <Wire.h>
+
+// ── PID Gains (tuned empirically) ───────────────────────────
+float Kp = 1.80, Ki = 0.05, Kd = 0.40;
+
+// ── Complementary Filter ────────────────────────────────────
+const float alpha = 0.98;
+float pitch_angle = 0.0;
+
+// ── PID state ───────────────────────────────────────────────
+float pid_integral  = 0.0;
+float prev_pitch_err = 0.0;
+unsigned long prev_time;
+
+// ── Raw IMU ─────────────────────────────────────────────────
+int16_t ax, ay, az, gx, gy, gz;
+
+float readPitch_accel() {
+  return atan2(ay, az) * 180.0 / PI;
+}
+
+void loop() {
+  // ── Read MPU6050 ──────────────────────────────────────────
+  Wire.beginTransmission(0x68);
+  Wire.write(0x3B); Wire.endTransmission(false);
+  Wire.requestFrom(0x68, 14, true);
+  ax = Wire.read()<<8 | Wire.read();
+  ay = Wire.read()<<8 | Wire.read();
+  az = Wire.read()<<8 | Wire.read();
+  Wire.read(); Wire.read();  // temperature
+  gx = Wire.read()<<8 | Wire.read();
+  gy = Wire.read()<<8 | Wire.read();
+
+  // ── Complementary Filter ─────────────────────────────────
+  unsigned long now = micros();
+  float dt = (now - prev_time) / 1e6;
+  prev_time = now;
+
+  float gyro_rate = gy / 131.0;           // °/s
+  float accel_pitch = readPitch_accel();
+  pitch_angle = alpha*(pitch_angle + gyro_rate*dt) + (1-alpha)*accel_pitch;
+
+  // ── RC Pitch Setpoint ────────────────────────────────────
+  int rc_pitch = pulseIn(pitchInPin, HIGH, 25000);
+  float setpoint = map(rc_pitch, 1000, 2000, -15, 15);  // ° target
+
+  // ── PID ──────────────────────────────────────────────────
+  float error = setpoint - pitch_angle;
+  pid_integral += error * dt;
+  pid_integral  = constrain(pid_integral, -20, 20);
+  float derivative = (error - prev_pitch_err) / dt;
+  prev_pitch_err   = error;
+
+  float pid_out = Kp*error + Ki*pid_integral + Kd*derivative;
+  pid_out = constrain(pid_out, -30, 30);
+
+  // ── Servo Output ─────────────────────────────────────────
+  int elev_cmd = 1500 + (int)(pid_out * 6.0);
+  elev_cmd = constrain(elev_cmd, 1000, 2000);
+  elevatorServo.writeMicroseconds(elev_cmd);
+
+  // ── Telemetry ────────────────────────────────────────────
+  Serial.print("t="); Serial.print(millis()/1000.0, 2);
+  Serial.print("s  Pitch:"); Serial.print(pitch_angle, 1);
+  Serial.print("°  err:"); Serial.print(error, 2);
+  Serial.print("  PID_out:"); Serial.println(pid_out, 2);
+
+  delay(10);
+}
+```
+
+---
+##  PID Stabilization System
+
+### PID Step Response — Gain Comparison
+
+The plot below was generated from flight log data replayed through the PID algorithm with different gain sets. The **optimal PID (Kp=1.8, Ki=0.05, Kd=0.4)** settles within ±0.8° in under 0.6 s with no steady-state error.
+
+<img width="1635" height="729" alt="pid_gain_sweep" src="https://github.com/user-attachments/assets/6059a22d-9af6-4e14-8f15-ff642a36aa3c" />
+
+
+| Gain Configuration | Behaviour | Settling Time |
+|:---|:---|:---|
+| Kp=0.5, Ki=0, Kd=0 | Sluggish, large offset | Never settles |
+| Kp=4.0, Ki=0, Kd=0 | Oscillates continuously | — |
+| Kp=1.8, Ki=0, Kd=0.4 | Fast, small residual error | ~0.9 s |
+| **Kp=1.8, Ki=0.05, Kd=0.4** | **Optimal — zero steady-state** | **~0.6 s** |
+
+### PID Tuning Procedure
+
+```
+Step 1: Set all gains to zero.
+Step 2: Raise Kp until the ornithopter oscillates around level → back off 20%.
+Step 3: Raise Kd to dampen oscillations.
+Step 4: Raise Ki slowly to eliminate any residual tilt offset.
+```
+
+| Symptom | Corrective Action |
+|:---|:---|
+| Slow response to disturbance | Increase Kp |
+| Persistent tilt offset | Increase Ki |
+| Oscillating / shaking | Increase Kd or reduce Kp |
+| Violent overcorrection | Reduce Kp, increase Kd |
+
+---
+
 
 
 
