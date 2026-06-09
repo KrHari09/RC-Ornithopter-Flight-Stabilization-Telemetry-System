@@ -464,6 +464,12 @@ The graph below shows pitch angle (°) over a 3-second flight segment including 
 ---
 
 
+## 📁 Project Structure
+
+<img width="1440" height="2440" alt="image" src="https://github.com/user-attachments/assets/7e602815-ab7f-41af-aa7c-e2982ca73480" />
+
+---
+
 
 
 
