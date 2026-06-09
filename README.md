@@ -423,5 +423,48 @@ AR = b² / S = (0.51)² / (0.4032) ≈ 0.645
 
 ---
 
+##  Test Results & Telemetry
+
+### Pitch PID Response — In-Flight Data
+
+The graph below shows pitch angle (°) over a 3-second flight segment including a simulated wind gust disturbance at t = 0.3 s. The PID controller returns pitch to ±0.8° within 0.5 s.
+
+<img width="1635" height="729" alt="pid_pitch_response" src="https://github.com/user-attachments/assets/8824e083-8110-4c28-bddb-b86baa34e616" />
+
+### Three-Phase Testing
+
+
+**Phase 1 — Manual RC Passthrough (No Stabilization)**
+- Sustained flight achieved 
+- Extremely difficult to control — pilot must constantly correct pitch
+- Frequent crashes due to flapping-induced pitch instability
+
+**Phase 2 — PD Controller on Elevator Servo**
+- Pitch stabilization significantly improved 
+- Gearbox rocker-link / shoulder identified as main failure point
+- Frame balance and gearbox mount revised
+
+**Phase 3 — Full PID + RC Hybrid**
+- Semi-autonomous level flight demonstrated 
+- ~30 yards of controlled straight flight recorded
+- 9 full wing-beat cycles captured per test window
+- ESC 30 A limit constrains maximum throttle to ~70%
+
+### Key Metrics
+
+| Metric | Value |
+|:---|:---|
+| Max sustained flight distance | ~30 yards |
+| Pitch error (steady state) | < ±0.8° |
+| Pitch settling time (after disturbance) | ~0.5 s |
+| Wing beats per test window | 9 cycles |
+| PID loop rate | 100 Hz |
+| Serial telemetry rate | 100 Hz @ 115200 baud |
+
+---
+
+
+
+
 
 
