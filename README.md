@@ -115,7 +115,8 @@ The ornithopter uses a **compound gear train** to translate the rotary motion of
 
 >  **Critical:** NEVER power servos or the motor directly from the Arduino's 5V pin. Always use the ESC's built-in BEC (Battery Eliminator Circuit) for the 5V rail.
 
-<img width="1452" height="1160" alt="image" src="https://github.com/user-attachments/assets/fb196ac8-c9bc-47dc-b7ff-f1ecb83f7541" />
+<img width="1452" height="1040" alt="image" src="https://github.com/user-attachments/assets/b741ec81-299b-428f-ae69-e6c281051374" />
+
 
 ### Pin Wiring Table
 
@@ -143,6 +144,18 @@ The ornithopter uses a **compound gear train** to translate the rotary motion of
 
 ---
 
+##  Arduino Flight Controller Code
+
+### Serial Monitor — Startup Output
+
+The screenshot below shows the Arduino IDE **Serial Monitor** at 115200 baud during a calibration-to-flight sequence. The I²C bus scan confirms MPU6050 at address `0x68`, followed by receiver channel verification and PID loop telemetry.
+
+
+<img width="1517" height="842" alt="serial_monitor" src="https://github.com/user-attachments/assets/87aba7cd-b66f-4bb7-930e-f3f6aecf6512" />
+
+> **Observed:** All three RC channels lock at ~1500 µs (center) at startup. PID output converges toward zero within 0.5 s as the complementary filter settles.
+
+---
 
 
 
