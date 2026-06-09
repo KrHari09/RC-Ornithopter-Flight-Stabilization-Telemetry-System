@@ -375,3 +375,53 @@ Features:
 - Complementary filter visualization toggle
 
 ---
+
+##  Aerodynamic Calculations
+
+### Bernoulli Lift Equation
+
+```
+L = Cl × ρ × A × v² / 2
+
+  L  = Lift force (N)
+  Cl = Coefficient of Lift = 1.6
+  ρ  = Air density = 1.2041 kg/m³
+  A  = Wing area = 0.4032 m²
+  v  = Forward velocity (m/s)
+```
+
+### Aspect Ratio
+
+```
+AR = b² / S = (0.51)² / (0.4032) ≈ 0.645
+
+→ Low aspect ratio — prioritizes maneuverability over glide efficiency,
+  appropriate for a flapping-wing MAV.
+```
+
+### Measured Flight Parameters
+
+| Parameter | Value |
+|:---|:---|
+| Total MAV Weight | 98.2 g |
+| Wing Span | 510 mm |
+| Wing Area | 403.2 cm² |
+| Flapping Amplitude | 40° |
+| Flapping Frequency | 5.2 Hz |
+| Lift Coefficient (Cl) | 1.6 |
+| Gear Ratio | 7:1 |
+| Cruising Throttle | ~70% |
+
+### Structural Safety Condition
+
+```
+σ_max ≤ σ_yt / n
+
+  σ_yt = Yield strength of fiberglass frame
+  n    = Factor of safety (≥ 2 recommended)
+```
+
+---
+
+
+
