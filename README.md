@@ -336,6 +336,28 @@ The **complementary filter** (α = 0.98) blends:
 
 <img width="1452" height="920" alt="image" src="https://github.com/user-attachments/assets/bcc1df57-efc9-41a2-b25c-71ebfd135c91" />
 
+At α = 0.98, the gyroscope dominates at high frequencies (wing vibration rejection) while the accelerometer slowly corrects long-term drift.
 
+---
+
+##  Wing Beat Frequency Analysis
+
+### FFT — Accelerometer Z-axis (5-second capture)
+
+Post-flight FFT analysis of the accelerometer Z-axis data confirms **5.2 Hz fundamental wing beat frequency**, with visible 2nd (10.4 Hz) and 3rd (15.6 Hz) harmonics consistent with the dual-crank mechanism's kinematics.
+
+
+<img width="1635" height="733" alt="fft_wing_beat" src="https://github.com/user-attachments/assets/9bcbe31e-266f-48f3-8923-54632c077b08" />
+
+
+| Peak | Frequency | Amplitude | Interpretation |
+|:---|:---|:---|:---|
+| Fundamental | 5.2 Hz | 2.1 ° | Primary wing stroke |
+| 2nd Harmonic | 10.4 Hz | 0.8 ° | Gear mesh / crank return |
+| 3rd Harmonic | 15.6 Hz | 0.3 ° | Structural mode |
+
+> The PID derivative term (Kd) must be low-pass filtered to prevent these harmonics from coupling into the servo output.
+
+---
 
 
